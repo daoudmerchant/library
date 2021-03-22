@@ -44,12 +44,25 @@ function createCard(book) {
     card.appendChild(title);
     card.appendChild(info);
     card.appendChild(readStatus);
-    card.addEventListener('click', toggleClass);
+    card.addEventListener('click', toggleCard);
     cardContainer.appendChild(card);
 }
 
-function toggleClass() {
+function toggleCard() {
+    
+    function toggleReadStatus(card) {
+        const thisBookTitle = card.firstElementChild.textContent;
+        const thisBook = myLibrary.filter(book => book.title === thisBookTitle);
+        thisBook.read = (true) ? true : false;
+    }
+    
     this.classList.toggle("read");
+    let cardReadStatus = this.lastChild;
+    setTimeout(() => {
+        cardReadStatus.textContent =
+            (cardReadStatus.textContent === "read") ? "unread" : "read";
+    }, 20); // yes I know I'm cheating and this should be a transition
+    toggleReadStatus(this);
 }
 
 // temporary to adjust formatting
