@@ -11,7 +11,7 @@ body {
 h1 {
     text-align: center;
     font-size: 4em;
-    margin: .2rem auto;
+    margin: 2rem auto;
 }
 
 #newBook {
@@ -47,7 +47,7 @@ h1 {
     justify-content: center;
     margin: 20px;
     animation-name: fadein;
-    animation-duration: .2s;
+    animation-duration: .8s;
 }
 
 @keyframes fadein {
@@ -78,6 +78,7 @@ h1 {
 .read {
     background-color: rgb(242, 242, 242);
     color: rgb(191, 191, 191);
+    box-shadow: none;
 }
 
 .readStatus {
