@@ -24,7 +24,7 @@ const cardContainer = document.querySelector("#cardContainer");
 
 function showLibrary(libraryArray) {
     libraryArray.forEach((book, i) => {
-        setTimeout(() => createCard(book, i), i * 50);
+        setTimeout(() => createCard(book), i * 50);
     });
 }
 
@@ -44,13 +44,17 @@ function createCard(book) {
     card.appendChild(title);
     card.appendChild(info);
     card.appendChild(readStatus);
+    card.addEventListener('click', toggleClass);
     cardContainer.appendChild(card);
+}
+
+function toggleClass() {
+    this.classList.toggle("read");
 }
 
 // temporary to adjust formatting
 
-// showBook(theHobbit);
-
 myLibrary = [theHobbit, greatGatsby, catch22, mobyDick, donQuixote, mockingbird];
 
 showLibrary(myLibrary);
+
