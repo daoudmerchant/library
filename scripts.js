@@ -24,13 +24,14 @@ const cardContainer = document.querySelector("#cardContainer");
 
 function showLibrary(libraryArray) {
     libraryArray.forEach((book, i) => {
-        setTimeout(() => createCard(book), i * 50);
+        setTimeout(() => createCard(book, i), i * 50);
     });
 }
 
-function createCard(book) {
+function createCard(book, index) {
     const card = document.createElement("div");
     card.className = (book.read) ? "card read" : "card";
+    card.setAttribute("data-index", `${index}`);
     const title = document.createElement("p");
     title.textContent = book.title;
     title.className = "title";
@@ -49,18 +50,17 @@ function createCard(book) {
 }
 
 function toggleCard() {
+    const thisBook = myLibrary[this.dataset.index];
     
-    function toggleReadStatus(card) {
-        const thisBookTitle = card.firstElementChild.textContent;
-        const thisBook = myLibrary.filter(book => book.title === thisBookTitle);
-        thisBook.read = (true) ? true : false;
+    function toggleReadStatus() {
+        thisBook.read = (thisBook.read === true) ? false : true;
+        console.log(thisBook);
     }
     
     this.classList.toggle("read");
     let cardReadStatus = this.lastChild;
     setTimeout(() => {
-        cardReadStatus.textContent =
-            (cardReadStatus.textContent === "read") ? "unread" : "read";
+        cardReadStatus.textContent = (thisBook.read) ? "read" : "unread";
     }, 20); // yes I know I'm cheating and this should be a transition
     toggleReadStatus(this);
 }
