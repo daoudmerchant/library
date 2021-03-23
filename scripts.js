@@ -18,9 +18,26 @@ const mobyDick = new Book("Moby Dick", "Herman Melville", 378, false);
 const donQuixote = new Book("Don Quixote", "Miguel de Cervantes", 863, true);
 const mockingbird = new Book("To Kill A Mockingbird", "Harper Lee", 281, false);
 
-// display function
+// element locators
 
 const cardContainer = document.querySelector("#cardContainer");
+const newBookButton = document.querySelector("#newBook");
+const newBookForm = document.querySelector("form");
+const textValues = document.querySelectorAll(".textInput");
+const unreadValue = document.querySelector('[name="readOrNot"]');
+const submitButton = document.querySelector("#submit");
+const libraryOrder = document.querySelector("#order");
+
+// event listeners etc.
+
+libraryOrder.addEventListener('change', function() {
+    console.log(this.value);
+});
+newBook.addEventListener('click', toggleForm);
+newBookForm.onsubmit = submitNewBook;
+
+
+// display function
 
 function showLibrary(libraryArray) {
     libraryArray.forEach((book, i) => {
@@ -55,13 +72,15 @@ function createCard(book, index) {
     card.appendChild(info);
     card.appendChild(readStatus);
 
-    // event listeners
+    // add event listeners
     card.addEventListener('click', toggleCard);
     deleteButton.addEventListener('click', deleteCard);
 
     // insert card
     cardContainer.appendChild(card);
 }
+
+// card manipulation functions
 
 function toggleCard() {
     function toggleReadStatus() {
@@ -77,21 +96,49 @@ function toggleCard() {
     toggleReadStatus(this);
 }
 
-function deleteCard(e) {
-    function removeBook(button, e) {
-        e.stopPropagation();
-        if (confirm("Delete book permanently?")) {
-            myLibrary.splice(button.parentElement.dataset.index, 1);
-            button.parentElement.remove();
-        }
-        console.log(myLibrary)
+function reorderLibrary(order) {
+    switch (order) {
+        case "toread" :
+            myLibrary
     }
-
-    removeBook(this, e);
-    emptyLibrary();
-    showLibrary(myLibrary);
 }
 
+// new book entry functions
+
+function toggleForm() {
+    newBookForm.classList.toggle("hidden");
+}
+
+function submitNewBook() {
+    function createBook(a, b, c, d) {
+        const newBook = new Book(a.value, b.value, Number(c.value),
+            (d.checked) ? false : true);
+        myLibrary.unshift(newBook);
+    }
+    toggleForm();
+    createBook(...textValues, unreadValue);
+    emptyLibrary();
+    showLibrary(myLibrary);
+    newBookForm.reset();
+
+    return false;
+}
+
+// card deletion functions
+
+function deleteCard(e) {
+    function removeBook(button) {
+        myLibrary.splice(button.parentElement.dataset.index, 1);
+        button.parentElement.remove();
+    }
+    
+    e.stopPropagation();
+    if (confirm("Delete book permanently?")) {
+        removeBook(this);
+        emptyLibrary();
+        showLibrary(myLibrary);
+    }
+}
 
 function emptyLibrary() {
     while (cardContainer.firstChild) {
@@ -105,3 +152,60 @@ myLibrary = [theHobbit, greatGatsby, catch22, mobyDick, donQuixote, mockingbird]
 
 showLibrary(myLibrary);
 
+// failed form insertion
+
+    // // create elements
+    // const createBook = document.createElement("div");
+    // const newTitle = document.createElement("input");
+    // const newAuthor = document.createElement("input");
+    // const newLength = document.createElement("input");
+    // const newRead = document.createElement("div");
+    // const bookSubmit = document.createElement("button");
+
+    // const formArray = [newTitle, newAuthor, newLength, newRead, bookSubmit];
+
+    // const newReadFalse = document.createElement("input");
+    // const newReadFalseLabel = document.createElement("label");
+    // const newReadTrue = document.createElement("input");
+    // const newReadTrueLabel = document.createElement("label");
+
+    // const readArray = [newReadFalse, newReadFalseLabel, newReadTrue, newReadTrueLabel];
+
+
+    // // style elements and add placeholders
+
+    // const styleInput = function(element, type, placeholder) {
+    //     Object.assign(element, {
+    //         type,
+    //         placeholder,
+    //     })
+    // }
+    // const styleRadio = function(element, value) {
+    //     Object.assign(element, {
+    //         type: "radio",
+    //         value
+    //     })
+    // }
+
+    // createBook.className = "inputForm";
+
+    // styleInput(newTitle, "text", "Title");
+    // styleInput(newAuthor, "text", "Author");
+    // styleInput(newLength, "number", "300");
+
+    // styleRadio(newReadFalse, "unread");
+    // styleRadio(newReadTrue, "read");
+    // newReadFalseLabel.textContent = "Unread";
+    // newReadTrueLabel.textContent = "Read";
+    // bookSubmit.textContent = "Submit";
+
+    // readArray.forEach(radioItem => {
+    //     newRead.appendChild(radioItem);
+    // })
+    
+    // formArray.forEach(input => {
+    //     createBook.appendChild(input);
+    // })
+
+
+    // body.insertBefore(createBook, cardContainer);
