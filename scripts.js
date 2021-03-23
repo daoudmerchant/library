@@ -29,40 +29,74 @@ function showLibrary(libraryArray) {
 }
 
 function createCard(book, index) {
+    // create elements
     const card = document.createElement("div");
+    const title = document.createElement("p");
+    const info = document.createElement("p");
+    const readStatus = document.createElement("p");
+    const deleteButton = document.createElement("p")
+
+    // style, fill and index elements
     card.className = (book.read) ? "card read" : "card";
     card.setAttribute("data-index", `${index}`);
-    const title = document.createElement("p");
     title.textContent = book.title;
     title.className = "title";
-    const info = document.createElement("p");
     info.innerHTML = book.info();
     info.className = "info";
-    const readStatus = document.createElement("p");
     readStatus.textContent = (book.read) ?
         "read" : "unread";
     readStatus.className = "readStatus";
+    deleteButton.textContent = "\u2716";
+    deleteButton.className = "deleteKey";
+
+    // add elements to card
+    card.appendChild(deleteButton);
     card.appendChild(title);
     card.appendChild(info);
     card.appendChild(readStatus);
+
+    // event listeners
     card.addEventListener('click', toggleCard);
+    deleteButton.addEventListener('click', deleteCard);
+
+    // insert card
     cardContainer.appendChild(card);
 }
 
 function toggleCard() {
-    const thisBook = myLibrary[this.dataset.index];
-    
     function toggleReadStatus() {
         thisBook.read = (thisBook.read === true) ? false : true;
-        console.log(thisBook);
     }
     
-    this.classList.toggle("read");
+    this.classList.toggle("read"); // style
+    const thisBook = myLibrary[this.dataset.index];
     let cardReadStatus = this.lastChild;
     setTimeout(() => {
         cardReadStatus.textContent = (thisBook.read) ? "read" : "unread";
     }, 20); // yes I know I'm cheating and this should be a transition
     toggleReadStatus(this);
+}
+
+function deleteCard(e) {
+    function removeBook(button, e) {
+        e.stopPropagation();
+        if (confirm("Delete book permanently?")) {
+            myLibrary.splice(button.parentElement.dataset.index, 1);
+            button.parentElement.remove();
+        }
+        console.log(myLibrary)
+    }
+
+    removeBook(this, e);
+    emptyLibrary();
+    showLibrary(myLibrary);
+}
+
+
+function emptyLibrary() {
+    while (cardContainer.firstChild) {
+        cardContainer.removeChild(cardContainer.lastChild);
+    }
 }
 
 // temporary to adjust formatting
