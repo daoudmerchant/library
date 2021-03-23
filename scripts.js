@@ -31,7 +31,7 @@ const libraryOrder = document.querySelector("#order");
 // event listeners etc.
 
 libraryOrder.addEventListener('change', function() {
-    console.log(this.value);
+    reorderLibrary(this.value);
 });
 newBook.addEventListener('click', toggleForm);
 newBookForm.onsubmit = submitNewBook;
@@ -99,8 +99,20 @@ function toggleCard() {
 function reorderLibrary(order) {
     switch (order) {
         case "toread" :
-            myLibrary
+            myLibrary.sort((a, b) => (a.read < b.read) ? -1 : 1);
+            break;
+        case "alpha" :
+            myLibrary.sort((a, b) => {
+                return (a.title.charAt(0) < b.title.charAt(0)) ? -1 : 1});
+            break;
+        case "shortest" :
+            myLibrary.sort((a, b) => (a.pages < b.pages) ? -1 : 1);
+            break;
+        case "longest" :
+            myLibrary.sort((a, b) => (a.pages < b.pages) ? 1 : -1); 
     }
+    emptyLibrary();
+    showLibrary(myLibrary);
 }
 
 // new book entry functions
