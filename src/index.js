@@ -10,6 +10,8 @@ import {
   deleteDoc,
   query,
   where,
+  updateDoc,
+  getDoc,
 } from "firebase/firestore/lite";
 
 const firebaseConfig = {
@@ -123,18 +125,15 @@ function createCard(book) {
 
 // card manipulation functions
 
-function toggleCard() {
-  function toggleReadStatus() {
-    // thisBook.read = thisBook.read === true ? false : true;
-  }
+async function toggleCard(e) {
+  const thisBookRef = await doc(db, "books", e.target.dataset.bookid);
+  const bookSnap = await getDoc(thisBookRef);
+  const readStatus = bookSnap.data().read;
 
-  this.classList.toggle("read"); // style
-  const thisBook = myLibrary[this.dataset.index];
-  let cardReadStatus = this.lastChild;
-  setTimeout(() => {
-    cardReadStatus.textContent = thisBook.read ? "read" : "unread";
-  }, 20); // yes I know I'm cheating and this should be a transition
-  toggleReadStatus(this);
+  await updateDoc(thisBookRef, {
+    read: readStatus ? false : true,
+  });
+  refreshLibrary();
 }
 
 function reorderLibrary(order) {
@@ -175,7 +174,7 @@ async function submitNewBook() {
   toggleForm();
   const newBook = createBook(...textValues, unreadValue);
   await saveBook(newBook);
-  getLibrary();
+  refreshLibrary();
   newBookForm.reset();
 
   return false;
