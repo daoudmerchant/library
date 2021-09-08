@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Library App</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Library</h1>
@@ -15,24 +15,24 @@
           <option value="toread">Unread</option>
           <option value="alpha">Alphabetical</option>
           <option value="longest">Length (longest to shortest)</option>
-          <option value="shortest"> Length (shortest to longest)</option>
+          <option value="shortest">Length (shortest to longest)</option>
         </select>
       </div>
       <button id="newBook">Add Book</button>
     </div>
     <form class="hidden">
-      <input type="text" placeholder="Title" class="textInput">
-      <input type="text" placeholder="Author" class="textInput">
-      <input type="number" placeholder="Length (pages)" class="textInput">
+      <input type="text" placeholder="Title" class="textInput" />
+      <input type="text" placeholder="Author" class="textInput" />
+      <input type="number" placeholder="Length (pages)" class="textInput" />
       <div id="selectRead">
-        <input type="radio" name="readOrNot" value="unread" checked>
+        <input type="radio" name="readOrNot" value="unread" checked />
         <label for="unread">Unread</label>
-        <input type="radio" name="readOrNot" value="read">
+        <input type="radio" name="readOrNot" value="read" />
         <label for="read">Read</label>
       </div>
       <button type="submit" id="submit">Submit</button>
     </form>
     <div id="cardContainer"></div>
-    <script src="scripts.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
