@@ -4,8 +4,12 @@ import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   collection,
+  doc,
   addDoc,
   getDocs,
+  deleteDoc,
+  query,
+  where,
 } from "firebase/firestore/lite";
 
 const firebaseConfig = {
@@ -23,7 +27,10 @@ const booksCol = collection(db, "books");
 
 async function getBooks() {
   const bookSnapshot = await getDocs(booksCol);
-  const booksList = bookSnapshot.docs.map((doc) => doc.data());
+  const booksList = bookSnapshot.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  }));
   return booksList;
 }
 
@@ -62,7 +69,6 @@ const newBookButton = document.querySelector("#newBook");
 const newBookForm = document.querySelector("form");
 const textValues = document.querySelectorAll(".textInput");
 const unreadValue = document.querySelector('[name="readOrNot"]');
-const submitButton = document.querySelector("#submit");
 const libraryOrder = document.querySelector("#order");
 
 // event listeners etc.
@@ -81,7 +87,7 @@ function showLibrary(libraryArray) {
   });
 }
 
-function createCard(book, index) {
+function createCard(book) {
   // create elements
   const card = document.createElement("div");
   const title = document.createElement("p");
@@ -91,7 +97,7 @@ function createCard(book, index) {
 
   // style, fill and index elements
   card.className = book.read ? "card read" : "card";
-  card.setAttribute("data-index", `${index}`);
+  card.setAttribute("data-bookid", book.id);
   title.textContent = book.title;
   title.className = "title";
   info.innerHTML = book.info();
@@ -109,7 +115,7 @@ function createCard(book, index) {
 
   // add event listeners
   card.addEventListener("click", toggleCard);
-  deleteButton.addEventListener("click", deleteCard);
+  deleteButton.addEventListener("click", deleteBook);
 
   // insert card
   cardContainer.appendChild(card);
@@ -119,7 +125,7 @@ function createCard(book, index) {
 
 function toggleCard() {
   function toggleReadStatus() {
-    thisBook.read = thisBook.read === true ? false : true;
+    // thisBook.read = thisBook.read === true ? false : true;
   }
 
   this.classList.toggle("read"); // style
@@ -147,8 +153,7 @@ function reorderLibrary(order) {
     case "longest":
       myLibrary.sort((a, b) => (a.pages < b.pages ? 1 : -1));
   }
-  emptyLibrary();
-  showLibrary(myLibrary);
+  refreshLibrary();
 }
 
 // new book entry functions
@@ -178,17 +183,15 @@ async function submitNewBook() {
 
 // card deletion functions
 
-function deleteCard(e) {
-  function removeBook(button) {
-    myLibrary.splice(button.parentElement.dataset.index, 1);
-    button.parentElement.remove();
+function deleteBook(e) {
+  async function removeBook(button) {
+    await deleteDoc(doc(db, "books", button.parentElement.dataset.bookid));
+    refreshLibrary();
   }
 
   e.stopPropagation();
   if (confirm("Delete book permanently?")) {
     removeBook(this);
-    emptyLibrary();
-    showLibrary(myLibrary);
   }
 }
 
@@ -225,6 +228,11 @@ async function getLibrary() {
   const library = await getBooks(db);
   library.forEach((book) => Object.setPrototypeOf(book, Book.prototype));
   showLibrary(library);
+}
+
+function refreshLibrary() {
+  emptyLibrary();
+  getLibrary();
 }
 
 // initial function evocation
